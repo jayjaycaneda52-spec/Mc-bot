@@ -5,7 +5,7 @@ const fs = require('fs')
 // Load settings.json
 const settings = JSON.parse(fs.readFileSync('./settings.json', 'utf8'))
 
-// Keep alive server para kay Render - ISA LANG TO
+// Keep alive server para kay Render
 const app = express();
 app.get('/', (req, res) => res.send('Jay_afk bot is running!'));
 const PORT = process.env.PORT || 3000;
@@ -24,53 +24,47 @@ bot.once('spawn', () => {
   console.log('[BotLog] Bot spawned!')
   console.log(`[BotLog] Logged in as ${bot.username}`)
 
-  // AUTO LOGIN PARA SA LOGINSECURITY PLUGIN LALA
   setTimeout(() => {
-    bot.chat('/register yassinehzz$is$the$best yassinehzz$is$the$best') // pang 1st time lang to
-    bot.chat('/login yassinehzz$is$the$best') // ito yung laging gagana
+    // Login para sa LoginSecurity
+    bot.chat('/register 123456 123456')
+    bot.chat('/login 123456')
     console.log('[BotLog] Sent /login command')
-  }, 3000) // 3 seconds delay para sure na loaded na yung chat
+
+    // Skin set after 5 seconds
+    setTimeout(() => {
+      bot.chat('/skin set Esoni')
+      console.log('[BotLog] Sent /skin set Esoni')
+    }, 5000)
+
+    // Anti-AFK jump every 1 minute para di ma-kick
+    setInterval(() => {
+      bot.setControlState('jump', true)
+      setTimeout(() => bot.setControlState('jump', false), 500)
+      console.log('[BotLog] Anti-AFK jump')
+    }, 60000)
+
+  }, 3000)
 })
 
-bot.on('login', () => {
-  console.log('[BotLog] Bot logged in to server')
+bot.on('chat', (username, message) => {
+  console.log(`${username}: ${message}`)
 })
 
-bot.on('login', () => {
-  console.log('[BotLog] Bot logged in to server')
-})
-
+// AUTO RECONNECT PAG NA-KICK LALA - ITO YUNG FIX 2
 bot.on('kicked', (reason) => {
   console.log('[BotLog] Bot kicked:', reason)
+  console.log('[BotLog] Reconnecting in 5 seconds...')
+  setTimeout(() => process.exit(1), 5000)
 })
 
 bot.on('error', (err) => {
   console.log('[BotLog] Bot error:', err)
+  console.log('[BotLog] Reconnecting in 5 seconds...')
+  setTimeout(() => process.exit(1), 5000)
 })
 
 bot.on('end', () => {
   console.log('[BotLog] Bot disconnected')
-  if (settings['auto-reconnect']) {
-    console.log('[BotLog] Reconnecting in 5s...')
-    setTimeout(() => process.exit(), 5000)
-  }
+  console.log('[BotLog] Reconnecting in 5 seconds...')
+  setTimeout(() => process.exit(1), 5000)
 })
-
-// Auto-chat kung naka-enable sa settings.json
-if (settings['chat-messages'] && settings['chat-messages'].enabled) {
-  setInterval(() => {
-    const msg = settings['chat-messages'].messages[Math.floor(Math.random() * settings['chat-messages'].messages.length)]
-    bot.chat(msg)
-    console.log(`[BotLog] Sent message: ${msg}`)
-  }, settings['chat-messages']['repeat-delay'] * 1000)
-}
-
-// Chat log kung naka-enable
-if (settings['chat-log']) {
-  bot.on('chat', (username, message) => {
-    if (username === bot.username) return
-    console.log(`[ChatLog] <${username}> ${message}`)
-  })
-}
-
-console.log('[BotLog] Starting bot...')
