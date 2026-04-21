@@ -57,3 +57,9 @@ if (settings['chat-log']) {
     console.log(`[ChatLog] <${username}> ${message}`);
   });
 }
+// Keep alive para kay Render
+const express = require('express');
+const app = express();
+app.get('/', (req, res) => res.send('Jay_afk bot is running!'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Fake web server running on ${PORT}`));
