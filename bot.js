@@ -26,8 +26,8 @@ bot.once('spawn', () => {
 
   // AUTO LOGIN PARA SA LOGINSECURITY PLUGIN LALA
   setTimeout(() => {
-    bot.chat('/register 123456 123456') // pang 1st time lang to
-    bot.chat('/login 123456') // ito yung laging gagana
+    bot.chat('/register yassinehzz$is$the$best yassinehzz$is$the$best') // pang 1st time lang to
+    bot.chat('/login yassinehzz$is$the$best') // ito yung laging gagana
     console.log('[BotLog] Sent /login command')
   }, 3000) // 3 seconds delay para sure na loaded na yung chat
 })
