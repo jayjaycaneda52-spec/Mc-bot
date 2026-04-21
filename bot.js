@@ -32,8 +32,8 @@ bot.once('spawn', () => {
 
     // Skin set after 5 seconds
     setTimeout(() => {
-      bot.chat('/skin set Esoni')
-      console.log('[BotLog] Sent /skin set Esoni')
+      bot.chat('/skin set mori')
+      console.log('[BotLog] Sent /skin set mori')
     }, 5000)
 
     // Anti-AFK jump every 1 minute para di ma-kick
