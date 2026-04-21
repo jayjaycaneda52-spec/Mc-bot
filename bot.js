@@ -20,9 +20,20 @@ const bot = mineflayer.createBot({
 })
 
 // Bot events
-bot.on('spawn', () => {
+bot.once('spawn', () => {
   console.log('[BotLog] Bot spawned!')
   console.log(`[BotLog] Logged in as ${bot.username}`)
+
+  // AUTO LOGIN PARA SA LOGINSECURITY PLUGIN LALA
+  setTimeout(() => {
+    bot.chat('/register 123456 123456') // pang 1st time lang to
+    bot.chat('/login 123456') // ito yung laging gagana
+    console.log('[BotLog] Sent /login command')
+  }, 3000) // 3 seconds delay para sure na loaded na yung chat
+})
+
+bot.on('login', () => {
+  console.log('[BotLog] Bot logged in to server')
 })
 
 bot.on('login', () => {
