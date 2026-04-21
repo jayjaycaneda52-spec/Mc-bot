@@ -36,12 +36,25 @@ bot.once('spawn', () => {
       console.log('[BotLog] Sent /skin set mori')
     }, 5000)
 
-    // Anti-AFK jump every 1 minute para di ma-kick
-    setInterval(() => {
-      bot.setControlState('jump', true)
-      setTimeout(() => bot.setControlState('jump', false), 500)
-      console.log('[BotLog] Anti-AFK jump')
-    }, 60000)
+    // Anti-AFK: Jump + Sneak + Look every 30s para di ma-kick
+setInterval(() => {
+  bot.setControlState('jump', true)
+  bot.setControlState('sneak', true)
+
+  setTimeout(() => {
+    bot.setControlState('jump', false)
+    bot.setControlState('sneak', false)
+  }, 500)
+
+  console.log('[BotLog] Anti-AFK: Jump + Sneak')
+}, 30000)
+
+// Look around every 15 seconds para mas human-like
+setInterval(() => {
+  const yaw = Math.random() * Math.PI * 2
+  const pitch = (Math.random() - 0.5) * 0.5
+  bot.look(yaw, pitch, true)
+}, 15000)
 
   }, 3000)
 })
