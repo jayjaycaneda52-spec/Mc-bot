@@ -14,19 +14,19 @@ function createBot() {
 
   bot.on('kicked', (reason) => {
     console.log('[BotLog] Kicked from server:', reason)
-    console.log('[BotLog] Reconnecting in 5 sec...')
+    console.log('[BotLog] Reconnecting in 35000 sec...')
     setTimeout(() => createBot(), 5000)
   })
 
   bot.on('error', (err) => {
     console.log('[BotLog] Bot error:', err.message)
-    console.log('[BotLog] Reconnecting in 5 sec...')
+    console.log('[BotLog] Reconnecting in 35000 sec...')
     setTimeout(() => createBot(), 5000)
   })
 
   bot.on('end', () => {
     console.log('[BotLog] Bot disconnected')
-    console.log('[BotLog] Reconnecting in 5 sec...')
+    console.log('[BotLog] Reconnecting in 35000 sec...')
     setTimeout(() => createBot(), 5000)
   })
 } // end ng createBot function
