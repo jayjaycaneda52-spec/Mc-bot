@@ -81,3 +81,15 @@ bot.on('end', () => {
   console.log('[BotLog] Reconnecting in 5 seconds...')
   setTimeout(() => process.exit(1), 5000)
 })
+// KEEP ALIVE PARA DI MATULOG SA RENDER LALA
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000
+
+app.get('/', (req, res) => {
+  res.send('Mori is alive! Last ping: ' + new Date().toLocaleString())
+})
+
+app.listen(port, () => {
+  console.log(`[KeepAlive] Web server running on ${port}`)
+})
