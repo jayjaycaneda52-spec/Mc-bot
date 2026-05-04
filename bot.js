@@ -2,9 +2,9 @@ const mineflayer = require('mineflayer')
 
 function createBot() {
   const bot = mineflayer.createBot({
-    host: 'karacraftsmp888.mcsh.io',
+    host: 'starlightfam.mcsh.io',
     port: 25565,
-    username: 'mori',
+    username: 'mori_bot',
     version: false
   })
 
