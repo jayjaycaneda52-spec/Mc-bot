@@ -48,12 +48,12 @@ bot.on('spawn', () => {
 
   // AUTO LOGIN/REGISTER
   setTimeout(() => {
-    bot.chat('/register 123456 123456')
+    bot.chat('/register 123456789 123456789')
     console.log('[BotLog] Sent register command')
   }, 2000)
 
   setTimeout(() => {
-    bot.chat('/login 123456')
+    bot.chat('/login 123456789')
     console.log('[BotLog] Sent login command')
   }, 5000)
 
