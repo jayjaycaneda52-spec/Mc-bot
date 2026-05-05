@@ -3,7 +3,7 @@ const mineflayer = require('mineflayer')
 const bot = mineflayer.createBot({
   host: 'starlightfam.mcsh.io',  // palitan mo
   port: 25565,
-  username: 'KaracraftBot', // palitan mo
+  username: 'StarlightBot', // palitan mo
   version: false  // auto-detect version
 })
 
