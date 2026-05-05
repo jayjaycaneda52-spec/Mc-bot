@@ -1,88 +1,38 @@
 const mineflayer = require('mineflayer')
-const express = require('express')
-const app = express()
 
-app.get('/', (req, res) => res.send('Mori Bot is online!'))
-app.listen(3000, () => console.log('[Server] Express running'))
+const bot = mineflayer.createBot({
+  host: 'your-server-ip',  // palitan mo
+  port: 25565,
+  username: 'KaracraftBot', // palitan mo
+  version: false  // auto-detect version
+})
 
-function createBot() {
-  const bot = mineflayer.createBot({
-    host: 'starlightfam.mcsh.io',
-    port: 25565,
-    username: 'mori_bot',
-    version: false,
-    auth: 'offline'
-  })
+bot.on('login', () => {
+  console.log('Bot nag-login na')
+  
+  // Auto register/login para sa LoginSecurity
+  setTimeout(() => {
+    bot.chat('/register 123456 123456')
+    bot.chat('/login 123456')
+  }, 3000)
+})
 
-  let hasLoggedIn = false
+bot.on('chat', (username, message) => {
+  if (username === bot.username) return
+  
+  // Auto reply sa /msg
+  if (message.startsWith('/msg')) {
+    bot.chat('Busy pa si bot boss')
+  }
+})
 
-  bot.on('messagestr', (message) => {
-    console.log('', message)
-    const msg = message.toLowerCase()
+// Anti-AFK
+bot.on('spawn', () => {
+  setInterval(() => {
+    bot.setControlState('jump', true)
+    setTimeout(() => bot.setControlState('jump', false), 500)
+  }, 60000) // jump every 60 sec
+})
 
-    if (hasLoggedIn) return
-
-    // Pag may "login" o "registered" sa message, /login agad
-    if (msg.includes('login') || msg.includes('register') || msg.includes('logged')) {
-      setTimeout(() => {
-        bot.chat('/login 123456') // PALITAN MO TO NG TAMANG PASSWORD
-        console.log('[BOT] Sent /login 123456')
-      }, 500) // 0.5 SEC LANG DELAY PARA DI MA-KICK
-    }
-
-    if (msg.includes('successfully logged') || msg.includes('you are logged in')) {
-      hasLoggedIn = true
-      console.log('[BOT] LOGIN SUCCESS!')
-    }
-  })
-
-  // SPAM LOGIN PAGKA-CONNECT PARA SURE
-  bot.on('login', () => {
-    console.log('[BOT] Connected, sending /login in 1 sec')
-    setTimeout(() => {
-      if (!hasLoggedIn) {
-        bot.chat('/login 123456') // PALITAN MO PASSWORD
-        console.log('[BOT] Forced /login sent')
-      }
-    }, 1000)
-  })
-
-  bot.on('spawn', () => {
-    console.log('[BOT] SPAWNED NA SI MORI_BOT! SUCCESS!')
-    hasLoggedIn = true
-
-    setInterval(() => {
-      if (bot.entity) bot.setControlState('jump', true)
-      setTimeout(() => bot.setControlState('jump', false), 500)
-    }, 20000)
-
-    setInterval(() => {
-      if (bot.entity) bot.look(Math.random() * Math.PI * 2, 0)
-    }, 15000)
-
-    setTimeout(() => {
-      console.log('[BOT] 10min na, restart')
-      bot.quit('10min restart')
-    }, 10 * 60 * 1000)
-  })
-
-  bot.on('kicked', (reason) => {
-    console.log('[KICKED]', reason)
-    hasLoggedIn = false
-    setTimeout(() => createBot(), 40000)
-  })
-
-  bot.on('error', (err) => {
-    console.log('[ERROR]', err.message)
-    hasLoggedIn = false
-    setTimeout(() => createBot(), 40000)
-  })
-
-  bot.on('end', () => {
-    console.log('[END] Disconnected')
-    hasLoggedIn = false
-    setTimeout(() => createBot(), 40000)
-  })
-}
-
-createBot()
+bot.on('kicked', console.log)
+bot.on('error', console.log)
