@@ -16,7 +16,16 @@ bot.on('login', () => {
     bot.chat('/login 123456')
   }, 3000)
 })
+bot.on('kicked', (reason) => {
+  console.log('Kicked from server:', reason)
+  console.log('Waiting 30 seconds before exit...')
+  setTimeout(() => process.exit(1), 30000) // Si Render bahala mag restart
+})
 
+bot.on('end', () => {
+  console.log('Bot disconnected. Restarting in 30s...')
+  setTimeout(() => process.exit(1), 30000)
+})
 bot.on('chat', (username, message) => {
   if (username === bot.username) return
   
