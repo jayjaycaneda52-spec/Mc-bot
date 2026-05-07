@@ -1,38 +1,79 @@
 const mineflayer = require('mineflayer')
 const express = require('express')
 
-// ETO IMPORTANTE PARA KAY RENDER + UPTIMEROBOT
+// 1. PARA GISING SI RENDER + UPTIMEROBOT
 const app = express()
 const PORT = process.env.PORT || 3000
-app.get('/', (req, res) => res.send('Bot is alive'))
-app.listen(PORT, () => console.log(`HTTP running on ${PORT}`))
+app.get('/', (req, res) => res.send('Bot Online'))
+app.listen(PORT, () => console.log(`HTTP server running on ${PORT}`))
 
-function createBot() {
+// 2. DELAY START PARA IWAS "GHOST LOGIN"
+setTimeout(startBot, 25000)
+
+function startBot() {
+  console.log('Connecting to starlightfam.mcsh.io...')
+  
   const bot = mineflayer.createBot({
     host: 'starlightfam.mcsh.io',
     port: 25565,
     username: 'StarlightBot',
     version: '1.20.1',
-    auth: 'offline'
+    auth: 'offline',
+    hideErrors: true
   })
 
-  bot.on('login', () => console.log('LOGIN OK'))
-  bot.on('spawn', () => console.log('NASA LOOB NA'))
-  
-  bot.on('end', () => {
-    console.log('Na-disconnect, reconnect in 40s...')
-    setTimeout(createBot, 40000) // Auto-reconnect, hindi exit
+  let isReconnecting = false
+  let afkInterval = null
+
+  bot.on('spawn', () => {
+    console.log('SUCCESS: Nasa loob na ng server')
+    isReconnecting = false
+    
+    // ANTI-AFK NA HINDI SPAM SA CHAT
+    if (afkInterval) clearInterval(afkInterval)
+    afkInterval = setInterval(() => {
+      if (!bot.entity) return
+      
+      // Random na galaw lang, walang chat
+      const actions = ['jump', 'sneak']
+      const action = actions[Math.floor(Math.random() * actions.length)]
+      
+      bot.setControlState(action, true)
+      setTimeout(() => bot.setControlState(action, false), 600)
+      
+      // Lilingon random
+      bot.look(Math.random() * Math.PI * 2, Math.random() * Math.PI - Math.PI/2)
+      
+      console.log('Anti-AFK: gumalaw')
+    }, 180000) // Every 3 minutes lang para hindi halata
+  })
+
+  // SAFE RECONNECT - 90 SECONDS DELAY PARA DI MA-DETECT AS BOT
+  function reconnect() {
+    if (isReconnecting) return
+    isReconnecting = true
+    if (afkInterval) clearInterval(afkInterval)
+    
+    console.log('Na-disconnect. Reconnect after 90 seconds para safe...')
+    setTimeout(() => {
+      startBot()
+    }, 90000) // 90 seconds = hindi spam
+  }
+
+  bot.on('end', reconnect)
+  bot.on('kicked', (reason) => {
+    console.log('Na-kick:', reason)
+    reconnect()
   })
 
   bot.on('error', err => {
-    console.log('ERROR:', err.message)
-    // Wag mag exit agad
+    console.log('Error lang:', err.message)
   })
 
-  bot.on('kicked', (reason) => {
-    console.log('KICKED:', reason)
-    setTimeout(createBot, 40000) // Auto-reconnect, hindi exit
+  bot.on('messagestr', (msg) => {
+    // Hindi mag-reply sa chat para walang spam
+    if (msg.toLowerCase().includes('afk')) {
+      console.log('May nag-check ng AFK sa chat')
+    }
   })
-}
-
-createBot() // Start bot
+        }
