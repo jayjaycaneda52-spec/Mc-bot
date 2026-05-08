@@ -12,7 +12,6 @@ setTimeout(startBot, 25000)
 
 function startBot() {
   console.log('Connecting to starlightfam.mcsh.io...')
-  
   const bot = mineflayer.createBot({
     host: 'starlightfam.mcsh.io',
     port: 25565,
@@ -33,47 +32,11 @@ function startBot() {
     if (afkInterval) clearInterval(afkInterval)
     afkInterval = setInterval(() => {
       if (!bot.entity) return
-      
-      // Random na galaw lang, walang chat
       const actions = ['jump', 'sneak']
       const action = actions[Math.floor(Math.random() * actions.length)]
-      
       bot.setControlState(action, true)
       setTimeout(() => bot.setControlState(action, false), 600)
-      
-      // Lilingon random
       bot.look(Math.random() * Math.PI * 2, Math.random() * Math.PI - Math.PI/2)
-      
       console.log('Anti-AFK: gumalaw')
-    }, 180000) // Every 3 minutes lang para hindi halata
+    }, 180000)
   })
-
-  // SAFE RECONNECT - 90 SECONDS DELAY PARA DI MA-DETECT AS BOT
-  function reconnect() {
-    if (isReconnecting) return
-    isReconnecting = true
-    if (afkInterval) clearInterval(afkInterval)
-    
-    console.log('Na-disconnect. Reconnect after 90 seconds para safe...')
-    setTimeout(() => {
-      startBot()
-    }, 90000) // 90 seconds = hindi spam
-  }
-
-  bot.on('end', reconnect)
-  bot.on('kicked', (reason) => {
-    console.log('Na-kick:', reason)
-    reconnect()
-  })
-
-  bot.on('error', err => {
-    console.log('Error lang:', err.message)
-  })
-
-  bot.on('messagestr', (msg) => {
-    // Hindi mag-reply sa chat para walang spam
-    if (msg.toLowerCase().includes('afk')) {
-      console.log('May nag-check ng AFK sa chat')
-    }
-  })
-        }
