@@ -40,3 +40,51 @@ function startBot() {
       console.log('Anti-AFK: gumalaw')
     }, 180000)
   })
+  // CHAT COMMANDS - SAGOT SA PLAYERS
+  bot.on('chat', (username, message) => {
+    if (username === bot.username) return
+    const msg = message.toLowerCase()
+    const tinagBa = msg.includes('starlightbot') || msg.includes('bot')
+    if (!tinagBa) return
+
+    if (msg.includes('paano') && msg.includes('claim')) {
+      bot.chat(`${username}, golden shovel lang tapos right-click 2 corners ng lupa`)
+    }
+    else if (msg.includes('port') || msg.includes('ip')) {
+      bot.chat(`${username}, 25565 port. Pero rekta starlightfam.mcsh.io na lang`)
+    }
+    else if (msg.includes('lag')) {
+      bot.chat(`${username}, baka sa farm mo yan. /spawn ka muna para mabawasan`)
+    }
+    else if (msg.includes('tpa')) {
+      bot.chat(`${username}, /tpa StarlightBot lang tapos auto accept ko`)
+    }
+    else if (msg.includes('saan rule') || msg.includes('rules') || msg.includes('rule')) {
+      bot.chat(`${username}, Rules ng StarlightFam:`)
+      setTimeout(() => bot.chat(`1. Bawal grief/magnakaw`), 1000)
+      setTimeout(() => bot.chat(`2. Bawal xray/cheat/hack`), 2000)
+      setTimeout(() => bot.chat(`3. Respeto sa lahat ng players`), 3000)
+      setTimeout(() => bot.chat(`4. Bawal mag mura sa chat`), 4000)
+      setTimeout(() => bot.chat(`5. Bawal mag spam/flood`), 5000)
+    }
+    else if (msg.includes('shop')) {
+      bot.chat(`${username}, /warp shop or /spawn tapos hanap ka villager area`)
+    }
+    else if (msg.includes('spawn')) {
+      bot.chat(`${username}, type mo lang /spawn`)
+    }
+    else {
+      bot.chat(`${username}, ano yun? Di ko na-gets tanong mo 😅`)
+    }
+  })
+
+  // AUTO ACCEPT TPA
+  bot.on('messagestr', (message) => {
+    if (message.includes('has requested to teleport to you')) {
+      bot.chat('/tpaccept')
+      setTimeout(() => bot.chat('TP mo accepted!'), 1500)
+    }
+    if (message.toLowerCase().includes('afk')) {
+      console.log('May nag-check ng AFK sa chat')
+    }
+  })
