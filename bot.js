@@ -1,51 +1,26 @@
 const mineflayer = require('mineflayer')
-const express = require('express')
-
-// 1. PARA GISING SI RENDER + UPTIMEROBOT
-const app = express()
-const PORT = process.env.PORT || 3000
-app.get('/', (req, res) => res.send('Bot Online'))
-app.listen(PORT, () => console.log('HTTP server running'))
-
-// 2. DELAY START PARA IWAS "GHOST LOGIN"
-setTimeout(startBot, 25000)
 
 function startBot() {
-  console.log('Connecting to starlightfam.mcsh.io...')
   const bot = mineflayer.createBot({
     host: 'starlightfam.mcsh.io',
     port: 25565,
     username: 'StarlightBot',
-    version: '1.20.1',
-    auth: 'offline',
-    hideErrors: true
+    version: '1.21.1'
   })
 
-  let isReconnecting = false
-  let afkInterval = null
+  bot.on('login', () => {
+    console.log('SUCCESS: Nasa loob na ng server')
+  })
 
   bot.on('spawn', () => {
-    console.log('SUCCESS: Nasa loob na ng server')
-    isReconnecting = false
-    // ANTI-AFK NA HINDI SPAM SA CHAT
-    if (afkInterval) clearInterval(afkInterval)
-    afkInterval = setInterval(() => {
-      if (!bot.entity) return
-      const actions = ['jump', 'sneak']
-      const action = actions[Math.floor(Math.random() * actions.length)]
-      bot.setControlState(action, true)
-      setTimeout(() => bot.setControlState(action, false), 600)
-      bot.look(Math.random() * Math.PI * 2, Math.random() * Math.PI - Math.PI/2)
-      console.log('Anti-AFK: gumalaw')
-    }, 180000)
+    bot.chat('StarlightBot online! Type "saan rule" or "paano claim"')
   })
 
-  // CHAT COMMANDS - SAGOT SA PLAYERS
+  // CHAT COMMANDS - GAGANA KAHIT WALANG "BOT" SA MESSAGE
   bot.on('chat', (username, message) => {
-    if (username === bot.username) return
+    if (username === bot.username) return // Wag sagutin sarili
+    
     const msg = message.toLowerCase()
-    const tinagBa = msg.includes('starlightbot') || msg.includes('bot')
-    if (!tinagBa) return
 
     if (msg.includes('paano') && msg.includes('claim')) {
       bot.chat(`${username}, golden shovel lang tapos right-click 2 corners ng lupa`)
@@ -59,49 +34,47 @@ function startBot() {
     else if (msg.includes('tpa')) {
       bot.chat(`${username}, /tpa StarlightBot lang tapos auto accept ko`)
     }
-    else if (msg.includes('saan rule') || msg.includes('rules') || msg.includes('rule')) {
+    else if (msg.includes('saan rule') || msg.includes('rules') || msg === 'rule') {
       bot.chat(`${username}, Rules ng StarlightFam:`)
-      setTimeout(() => bot.chat(`1. Bawal grief/magnakaw`), 1000)
-      setTimeout(() => bot.chat(`2. Bawal xray/cheat/hack`), 2000)
-      setTimeout(() => bot.chat(`3. Respeto sa lahat ng players`), 3000)
-      setTimeout(() => bot.chat(`4. Bawal mag mura sa chat`), 4000)
-      setTimeout(() => bot.chat(`5. Bawal mag spam/flood`), 5000)
+      setTimeout(() => bot.chat(`1. Bawal grief/magnakaw`), 800)
+      setTimeout(() => bot.chat(`2. Bawal xray/cheat/hack`), 1600)
+      setTimeout(() => bot.chat(`3. Respeto sa lahat ng players`), 2400)
+      setTimeout(() => bot.chat(`4. Bawal mag mura sa chat`), 3200)
+      setTimeout(() => bot.chat(`5. Bawal mag spam/flood`), 4000)
     }
     else if (msg.includes('shop')) {
       bot.chat(`${username}, /warp shop or /spawn tapos hanap ka villager area`)
     }
-    else if (msg.includes('spawn')) {
+    else if (msg === 'spawn' || msg.includes('punta spawn')) {
       bot.chat(`${username}, type mo lang /spawn`)
     }
-    else {
-      bot.chat(`${username}, ano yun? Di ko na-gets tanong mo 😅`)
+    else if (msg === 'hi' || msg === 'hello' || msg === 'oy') {
+      bot.chat(`Uy ${username}! Need mo help? Try mo "saan rule"`)
     }
   })
 
   // AUTO ACCEPT TPA
-  bot.on('messagestr', (message) => {
-    if (message.includes('has requested to teleport to you')) {
+  bot.on('message', (jsonMsg) => {
+    const msg = jsonMsg.toString()
+    if (msg.includes('has requested to teleport')) {
       bot.chat('/tpaccept')
-      setTimeout(() => bot.chat('TP mo accepted!'), 1500)
-    }
-    if (message.toLowerCase().includes('afk')) {
-      console.log('May nag-check ng AFK sa chat')
+      console.log('Tinanggap TPA request')
     }
   })
 
-  // SAFE RECONNECT - 90 SECONDS DELAY PARA DI MA-DETECT AS BOT
-  function reconnect() {
-    if (isReconnecting) return
-    isReconnecting = true
-    if (afkInterval) clearInterval(afkInterval)
-    console.log('Na-disconnect. Reconnect after 90 seconds para safe...')
-    setTimeout(() => { startBot() }, 90000)
-  }
+  // AUTO RECONNECT PAG NA-DC
+  bot.on('end', () => {
+    console.log('Na-disconnect. Reconnect in 10s...')
+    setTimeout(startBot, 10000)
+  })
 
-  bot.on('end', reconnect)
+  bot.on('error', (err) => {
+    console.log('Error:', err.message)
+  })
+
   bot.on('kicked', (reason) => {
-    console.log('Na-kick:', reason)
-    reconnect()
+    console.log('KICKED:', reason)
   })
-  bot.on('error', err => { console.log('Error lang:', err.message) })
-               }
+}
+
+startBot()
