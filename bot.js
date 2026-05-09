@@ -5,7 +5,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
 app.get('/', (req, res) => res.send('Bot Online'))
-app.listen(PORT, () => console.log(`HTTP server running on ${PORT}`))
+app.listen(PORT, () => console.log('HTTP server running'))
 
 // 2. DELAY START PARA IWAS "GHOST LOGIN"
 setTimeout(startBot, 25000)
@@ -27,7 +27,6 @@ function startBot() {
   bot.on('spawn', () => {
     console.log('SUCCESS: Nasa loob na ng server')
     isReconnecting = false
-    
     // ANTI-AFK NA HINDI SPAM SA CHAT
     if (afkInterval) clearInterval(afkInterval)
     afkInterval = setInterval(() => {
@@ -40,6 +39,7 @@ function startBot() {
       console.log('Anti-AFK: gumalaw')
     }, 180000)
   })
+
   // CHAT COMMANDS - SAGOT SA PLAYERS
   bot.on('chat', (username, message) => {
     if (username === bot.username) return
@@ -88,3 +88,20 @@ function startBot() {
       console.log('May nag-check ng AFK sa chat')
     }
   })
+
+  // SAFE RECONNECT - 90 SECONDS DELAY PARA DI MA-DETECT AS BOT
+  function reconnect() {
+    if (isReconnecting) return
+    isReconnecting = true
+    if (afkInterval) clearInterval(afkInterval)
+    console.log('Na-disconnect. Reconnect after 90 seconds para safe...')
+    setTimeout(() => { startBot() }, 90000)
+  }
+
+  bot.on('end', reconnect)
+  bot.on('kicked', (reason) => {
+    console.log('Na-kick:', reason)
+    reconnect()
+  })
+  bot.on('error', err => { console.log('Error lang:', err.message) })
+               }
