@@ -1,3 +1,4 @@
+require('dotenv').config()
 const mineflayer = require('mineflayer') 
 const express = require('express') 
 
@@ -21,6 +22,24 @@ function startBot() {
     hideErrors: true 
   }) 
 
+  // AUTO LOGIN PARA SA BOT ACCOUNT MO LANG
+  bot.on('login', () => { 
+    console.log('Nag-login server, mag-aauth na...') 
+    setTimeout(() => { 
+      bot.chat('/login ' + process.env.BOT_PASSWORD) 
+    }, 3000) 
+  }) 
+
+  bot.on('message', (message) => { 
+    const msg = message.toString().toLowerCase() 
+    if (msg.includes('registered') || msg.includes('register this name')) { 
+      setTimeout(() => { 
+        bot.chat('/register ' + process.env.BOT_PASSWORD + ' + process.env.BOT_PASSWORD)
+        console.log('Nag-register na bot account')
+      }, 3000) 
+    } 
+  })
+
   let isReconnecting = false 
   let afkInterval = null 
 
@@ -40,8 +59,6 @@ function startBot() {
       console.log('Anti-AFK: gumalaw') 
     }, 180000) 
   }) 
-
-  // TANGAL NA LAHAT NG CHAT COMMANDS DITO
 
   // AUTO ACCEPT TPA LANG NATIRA
   bot.on('messagestr', (message) => { 
@@ -73,4 +90,4 @@ function startBot() {
   bot.on('error', err => { 
     console.log('Error lang:', err.message) 
   }) 
-}
+      }
