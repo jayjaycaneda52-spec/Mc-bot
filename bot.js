@@ -23,6 +23,7 @@ function startBot() {
 
   let isReconnecting = false 
   let afkInterval = null 
+  const PASSWORD = '123456' // your password here
 
   bot.on('spawn', () => { 
     console.log('SUCCESS: Nasa loob na ng server') 
@@ -41,15 +42,35 @@ function startBot() {
     }, 180000) 
   }) 
 
-  // TANGAL NA LAHAT NG CHAT COMMANDS DITO
-
-  // AUTO ACCEPT TPA LANG NATIRA
+  // AUTO REGISTER + LOGIN
   bot.on('messagestr', (message) => { 
-    if (message.includes('has requested to teleport to you')) { 
-      bot.chat('/tpaccept') 
-      setTimeout(() => bot.chat('TP mo accepted!'), 1500) 
-    } 
-    if (message.toLowerCase().includes('afk')) { 
+    const msg = message.toLowerCase()
+
+    // If server asks to register
+    if (msg.includes('register') || msg.includes('choose a password') || msg.includes('new account')) {
+      setTimeout(() => {
+        bot.chat(`/register ${123456} ${123456}`)
+        console.log('Sent: /register ' + 123456)
+      }, 2500)
+    }
+
+    // If server asks to login
+    if (msg.includes('login') || msg.includes('enter your password') || msg.includes('account not logged in')) {
+      setTimeout(() => {
+        bot.chat(`/login ${123456}`)
+        console.log('Sent: /login ' + 123456)
+      }, 2500)
+    }
+
+    // AUTO ACCEPT TPA
+    if (msg.includes('has requested to teleport to you')) { 
+      setTimeout(() => {
+        bot.chat('/tpaccept') 
+        console.log('TP request accepted')
+      }, 1500)
+    }
+
+    if (msg.includes('afk')) { 
       console.log('May nag-check ng AFK sa chat') 
     } 
   }) 
