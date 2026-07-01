@@ -49,16 +49,16 @@ function startBot() {
     // If server asks to register
     if (msg.includes('register') || msg.includes('choose a password') || msg.includes('new account')) {
       setTimeout(() => {
-        bot.chat(`/register ${123456} ${123456}`)
-        console.log('Sent: /register ' + 123456)
+        bot.chat(`/register ${12345678} ${12345678}`)
+        console.log('Sent: /register ' + 12345678)
       }, 2500)
     }
 
     // If server asks to login
     if (msg.includes('login') || msg.includes('enter your password') || msg.includes('account not logged in')) {
       setTimeout(() => {
-        bot.chat(`/login ${123456}`)
-        console.log('Sent: /login ' + 123456)
+        bot.chat(`/login ${12345678}`)
+        console.log('Sent: /login ' + 12345678)
       }, 2500)
     }
 
