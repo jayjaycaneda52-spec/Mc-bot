@@ -1,13 +1,13 @@
 const mineflayer = require('mineflayer') 
 const express = require('express') 
 
-// 1. PARA GISING SI RENDER + UPTIMEROBOT 
+// RENDER STILL AWAKE
 const app = express() 
 const PORT = process.env.PORT || 3000 
 app.get('/', (req, res) => res.send('Bot Online')) 
 app.listen(PORT, () => console.log('HTTP server running')) 
 
-// 2. DELAY START PARA IWAS "GHOST LOGIN" 
+// 2. DELAY START
 setTimeout(startBot, 25000) 
 
 function startBot() { 
@@ -16,7 +16,7 @@ function startBot() {
     host: 'starlightfam.mcsh.io', 
     port: 25565, 
     username: 'StarlightBot', 
-    version: '1.20.1', 
+    version: '1.21.11', 
     auth: 'offline', 
     hideErrors: true 
   }) 
