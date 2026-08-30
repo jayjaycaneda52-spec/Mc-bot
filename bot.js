@@ -13,7 +13,7 @@ setTimeout(startBot, 25000)
 function startBot() { 
   console.log('Connecting to starlightfam.mcsh.io...') 
   const bot = mineflayer.createBot({ 
-    host: 'starlightfam.mcsh.io', 
+    host: 'starlights2.mcsh.io', 
     port: 25565, 
     username: 'StarlightBot', 
     version: '1.21.11', 
